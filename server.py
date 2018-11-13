@@ -11,7 +11,15 @@ ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 UPLOAD_FOLDER = 'images/'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+@app.errorhandler(404)
+def page_not_found(error):
+	app.logger.error('Page not found: %s', (request.path))
+	return render_template('404.html'), 404
 
+@app.errorhandler(500)
+def page_not_found(error):
+	app.logger.error('Page not found: %s', (request.path))
+	return render_template('404.html'), 404
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -76,7 +84,7 @@ def imagenet():
         if file.filename == '':
             flash('No selected file')
             return redirect(request.url)
-            
+
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
