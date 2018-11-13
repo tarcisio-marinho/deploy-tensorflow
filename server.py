@@ -32,14 +32,56 @@ def wait():
 def classification():
     return render_template('classification.html')
 
-@app.route('/mnist', methods=['GET'])
+
+        
+@app.route('/mnist', methods=['GET', 'POST'])
 def mnist():
-    return ''
+    if request.method == 'GET':
+        return render_template('mnist.html')
+
+    elif request.method == 'POST':
+        # if file not send
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(url_for("mnist"), code=302)
+        
+        file = request.files['file']
+        # if user does not select file, browser also
+        # submit a empty part without filename
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            return redirect(url_for('uploaded_file',
+                                    filename=filename))
 
 
-@app.route('/imagenet', methods=['GET'])
+@app.route('/imagenet', methods=['GET', 'POST'])
 def imagenet():
-    return ''
+    if request.method == 'GET':
+        return render_template('imagenet.html')
+
+    elif request.method == 'POST':
+        # if file not send
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(url_for("mnist"), code=302)
+        
+        file = request.files['file']
+        # if user does not select file, browser also
+        # submit a empty part without filename
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+            
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            return redirect(url_for('uploaded_file',
+                                    filename=filename))
 
 
 @app.route('/upload', methods=['GET', 'POST'])
