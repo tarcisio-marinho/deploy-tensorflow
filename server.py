@@ -4,6 +4,7 @@ import os
 import time
 import subprocess
 from werkzeug.utils import secure_filename
+import shutil
 
 
 app = Flask("Simple-Web-Server")
@@ -87,41 +88,21 @@ def imagenet():
 
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('uploaded_file',
-                                    filename=filename))
+            path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(path)
 
-
-@app.route('/upload', methods=['GET', 'POST'])
-def upload_file():
-    if request.method == 'POST':
-
-        # if file not send
-        if 'file' not in request.files:
-            flash('No file part')
-            return redirect(url_for("classification"), code=302)
-        
-        file = request.files['file']
-        # if user does not select file, browser also
-        # submit a empty part without filename
-        if file.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('uploaded_file',
-                                    filename=filename))
-    return '''
-    <!doctype html>
-    <title>Upload new File</title>
-    <h1>Upload new File</h1>
-    <form method=post enctype=multipart/form-data>
-      <p><input type=file name=file>
-         <input type=submit value=Upload>
-    </form>
-    '''
-
+            process = subprocess.Popen('python3 models/ImageNet/classify_image.py --image_file {}'.format(path),\
+                                                                 shell=True, \
+                                                                 stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                                                                 stderr=subprocess.PIPE)
+                                                                 
+            output = process.stdout.read()
+            err = process.stderr.read()
+            new_path = 'static/{}'.format(filename)
+            shutil.copy(path, new_path)
+            os.remove(new_path)
+            print(output)
+            return '<h1>Classification result: {}<h1> <br></br> <img src="{}">'.format(output, new_path)
 
 
 

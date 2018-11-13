@@ -1,0 +1,5 @@
+tabby, tabby cat (score = 0.41232)
+Egyptian cat (score = 0.27007)
+tiger cat (score = 0.21650)
+Persian cat (score = 0.00826)
+paper towel (score = 0.00214)
