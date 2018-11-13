@@ -32,7 +32,14 @@ def wait():
 def classification():
     return render_template('classification.html')
 
+@app.route('/mnist', methods=['GET'])
+def mnist():
+    return ''
 
+
+@app.route('/imagenet', methods=['GET'])
+def imagenet():
+    return ''
 
 
 @app.route('/upload', methods=['GET', 'POST'])
