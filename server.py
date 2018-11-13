@@ -91,18 +91,20 @@ def imagenet():
             path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(path)
 
-            process = subprocess.Popen('python3 models/ImageNet/classify_image.py --image_file {}'.format(path),\
-                                                                 shell=True, \
-                                                                 stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-                                                                 stderr=subprocess.PIPE)
+            process = subprocess.Popen('python3 models/ImageNet/classify_image.py \
+                                        --image_file {}'.format(path),\
+                                                        shell=True, \
+                                                        stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                                                        stderr=subprocess.PIPE)
                                                                  
-            output = process.stdout.read()
+            prediction = process.stdout.read().decode("utf-8") 
+            prediction.replace(")", ")<br></br>")
             err = process.stderr.read()
+
             new_path = 'static/{}'.format(filename)
             shutil.copy(path, new_path)
-            os.remove(new_path)
-            print(output)
-            return '<h1>Classification result: {}<h1> <br></br> <img src="{}">'.format(output, new_path)
+            return '<h1>Classification result: <br></br>\
+            {}<h1> <br></br> <img src="{}">'.format(prediction, new_path)
 
 
 
