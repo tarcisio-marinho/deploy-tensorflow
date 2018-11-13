@@ -1,6 +1,8 @@
 from flask import Flask, redirect
 from flask import render_template, url_for
 import os
+import time
+import subprocess
 
 app = Flask("Simple-Web-Server")
 
@@ -9,8 +11,10 @@ def hello_world():
     return redirect(url_for("classification"), code=302)
 
 
-
-
+@app.route('/wait')
+def wait():
+    time.sleep(2)
+    return ''
 
 @app.route('/classification', methods=['GET'])
 def classification():

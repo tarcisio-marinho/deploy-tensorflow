@@ -14,3 +14,11 @@
     sudo apt-get install python3-pip
 
     sudo pip3 install 
+
+# Run Web Server
+
+    sh run.sh 
+
+# Open on browser
+
+    xdg-open http://localhost:5000/
