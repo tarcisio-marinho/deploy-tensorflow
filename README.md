@@ -22,3 +22,7 @@
 # Open on browser
 
     xdg-open http://localhost:5000/
+
+# Docker tensorflow serving
+
+    https://github.com/tensorflow/serving/blob/master/tensorflow_serving/g3doc/docker.md
